@@ -21,7 +21,7 @@ from shared.validate import assert_no_nulls, assert_not_empty
 
 
 def build_fact_cpc() -> pl.DataFrame:
-    """Empilha todos os silvers do CPC disponíveis."""
+    """Empilha todos os silvers do CPC disponíveis, mantendo apenas colunas canônicas."""
     silver_dir = SILVER_ROOT / "cpc"
     files = sorted(silver_dir.glob("*.parquet"))
 
@@ -32,10 +32,17 @@ def build_fact_cpc() -> pl.DataFrame:
         )
 
     frames = [read_parquet(f) for f in files]
+    combined = pl.concat(frames, how="diagonal")
+
+    # Mantém apenas colunas canônicas (minúsculas, sem espaços ou caracteres especiais)
+    # Descarta colunas históricas extras que não fazem parte do schema padronizado
+    canonical = [c for c in combined.columns if c == c.lower() and " " not in c]
+    combined = combined.select(canonical)
+
     df = (
-        pl.concat(frames, how="diagonal")
-        .unique(subset=["co_ies", "co_curso", "ano"], keep="first")
-        .sort(["co_ies", "ano", "co_curso"])
+        combined
+        .unique(subset=["co_ies", "co_area", "ano"], keep="first")
+        .sort(["co_ies", "ano", "co_area"])
     )
 
     print(f"Silver carregado: {len(files)} anos, {df.shape[0]} linhas")
@@ -50,7 +57,8 @@ def main(verbose: bool) -> None:
         df = build_fact_cpc()
 
         assert_not_empty(df, "fact_cpc")
-        assert_no_nulls(df, ["co_ies", "co_curso", "ano"], "fact_cpc")
+        assert_no_nulls(df, ["co_ies", "ano"], "fact_cpc")
+        # co_curso é nulo em anos anteriores a 2017 — o INEP não publicava o código
 
         out = gold_path("fact_cpc")
         write_parquet(df, out)
