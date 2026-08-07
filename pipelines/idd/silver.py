@@ -87,6 +87,24 @@ def _rename_columns(df: pl.DataFrame) -> pl.DataFrame:
     return df.rename(existing)
 
 
+def _normalize_cebas(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Converte in_cebas de string para Boolean.
+    No XLSX do INEP: "X" = é CEBAS, "-" = não é CEBAS.
+    Qualquer outro valor (ou ausência da coluna) fica como null.
+    """
+    if "in_cebas" not in df.columns:
+        return df
+    return df.with_columns(
+        pl.when(pl.col("in_cebas") == "X")
+        .then(pl.lit(True))
+        .when(pl.col("in_cebas") == "-")
+        .then(pl.lit(False))
+        .otherwise(pl.lit(None, dtype=pl.Boolean))
+        .alias("in_cebas")
+    )
+
+
 def _cast_schema(df: pl.DataFrame) -> pl.DataFrame:
     """Aplica os tipos canônicos às colunas presentes."""
     casts = [
@@ -128,6 +146,7 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
     df = (
         raw
         .pipe(_rename_columns)
+        .pipe(_normalize_cebas)
         .pipe(_cast_schema)
     )
 

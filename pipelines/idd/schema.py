@@ -94,8 +94,14 @@ IDD_COLUMN_MAP: dict[str, str] = {
     "IDD (Contínuo)": "idd_continuo",               # 2017–2023
     "IDD (Faixa)": "idd_faixa",
 
-    # --- Colunas extras (ignoradas, mas mapeadas para facilitar debug) ---
+    # --- Colunas extras ---
+    # observacao: quando preenchida, indica que o IDD não pôde ser calculado
+    # estatisticamente (ex.: "Curso para o qual estatisticamente não foi possível
+    # calcular o indicador"). Cursos com observação têm idd_continuo e idd_faixa nulos.
     "Observação": "observacao",                      # 2017, 2018, 2021
+
+    # in_cebas: Entidade Beneficente de Assistência Social.
+    # No XLSX: "X" = é CEBAS, "-" = não é CEBAS. Convertido para Boolean no silver.
     "Entidade Beneficiente de Assistência Social (CEBAS)": "in_cebas",  # 2021–2023
 }
 
@@ -130,4 +136,5 @@ IDD_SILVER_SCHEMA: dict[str, pl.DataType] = {
     "nota_bruta_idd": pl.Float64,
     "idd_continuo": pl.Float64,
     "idd_faixa": pl.Int32,
+    "in_cebas": pl.Boolean,
 }
