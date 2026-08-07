@@ -5,8 +5,27 @@ Baseado na inspeção direta das planilhas do INEP (2007–2023).
 O CPC é calculado nos anos de aplicação do ENADE (ciclos trienais).
 2020 não existe (pandemia).
 
-Granularidade: uma linha por (co_ies, co_curso, ano).
+Granularidade:
+  - 2017–2023: uma linha por (co_ies, co_curso, ano)
+  - 2007–2016: uma linha por (co_ies, co_area, ano)  ← sem co_curso
 Chave de join com dim_ies: co_ies.
+
+## Limitação conhecida: ausência de co_curso antes de 2017
+
+O INEP não publicava o código do curso (co_curso) nos arquivos do CPC
+anteriores a 2017. Nesses anos, a granularidade mínima identificável é
+(co_ies, co_area, ano) — área de avaliação por IES.
+
+Imputar co_curso via join com o censo (co_ies + co_area) não é viável:
+  - Apenas ~39% dos pares (co_ies, co_area) são unívocos no censo de 2016
+  - Os ~61% restantes têm 2 ou mais cursos da mesma área na mesma IES
+  - Imputação produziria erros silenciosos nos joins futuros
+
+Consequências práticas:
+  - Análises por IES   (co_ies + ano):              sem limitação, 2007–2023
+  - Análises por área  (co_ies + co_area + ano):    sem limitação, 2007–2023
+  - Join com censo no nível do curso:               apenas 2017 em diante
+  - visão_ies futura: 2007–2016 contribuem com médias por IES, não por curso
 
 Variações históricas por período:
 

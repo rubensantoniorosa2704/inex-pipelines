@@ -125,6 +125,8 @@ O gold relê todos os silvers disponíveis e recalcula `dim_ies`, `hist_ies` e `
 
 **Por que `pl.concat(..., how="diagonal")`?** O INEP adiciona e remove colunas entre anos sem aviso. O modo `diagonal` preenche com nulo as colunas ausentes em anos mais antigos — comportamento correto para dados históricos com schema evolutivo.
 
+**Por que `co_curso` é nulo no CPC antes de 2017?** O INEP não publicava o código do curso nos arquivos do CPC anteriores a 2017. A granularidade nesses anos é `(co_ies, co_area, ano)`. Imputar `co_curso` via join com o censo não é viável: ~61% dos pares `(co_ies, co_area)` são ambíguos — a mesma IES oferece 2 ou mais cursos da mesma área. Joins no nível do curso com o censo estão disponíveis apenas a partir de 2017.
+
 ## Licença
 
 [MIT](LICENSE)
