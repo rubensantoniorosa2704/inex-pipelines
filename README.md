@@ -22,23 +22,25 @@ inex-pipelines  → silver: Parquets limpos por ano
 
 ## Tabelas gold disponíveis
 
-| Tabela | Chave | Linhas | Descrição |
-|--------|-------|--------|-----------|
-| `dim_ies` | `co_ies` | 3.759 | Uma linha por IES, estado mais recente (2024) |
-| `hist_ies` | `(co_ies, ano)` | 39.363 | Histórico de nome, categoria e organização acadêmica por ano |
-| `fact_censo_ies` | `(co_ies, ano)` | 39.363 | Métricas anuais do Censo: docentes e técnico-administrativos |
+| Tabela | Chave | Descrição |
+|--------|-------|-----------|
+| `dim_ies` | `co_ies` | Uma linha por IES, estado mais recente |
+| `hist_ies` | `(co_ies, ano)` | Histórico de nome, categoria e organização acadêmica por ano |
+| `fact_censo_ies` | `(co_ies, ano)` | Métricas anuais do Censo: docentes e técnico-administrativos |
+| `fact_cpc` | `(co_ies, co_curso, ano)` | CPC por curso: notas ENADE, IDD, corpo docente e percepção discente |
+| `fact_idd` | `(co_ies, co_curso, ano)` | IDD por curso: desempenho observado vs. esperado |
 
 O `co_ies` (código INEP) é a chave estável de todas as tabelas — não muda mesmo quando a IES muda de nome ou categoria administrativa.
 
 ## Pipelines implementados
 
 - [x] **Censo da Educação Superior** — 2009–2024
+- [x] **CPC** — 2021–2023
+- [x] **IDD** — 2016–2023
 
 ## Pipelines planejados
 
 - [ ] ENADE
-- [ ] CPC
-- [ ] IDD
 - [ ] IGC
 - [ ] `visão_ies` — tabela agregada com todos os indicadores
 
