@@ -37,14 +37,15 @@ O `co_ies` (código INEP) é a chave estável de todas as tabelas — não muda 
 
 - [x] **Censo da Educação Superior — IES** — 2009–2024
 - [x] **Censo da Educação Superior — Cursos** — 2009–2024
-- [x] **CPC** — 2021–2023
+- [x] **CPC** — 2007–2023
 - [x] **IDD** — 2016–2023
 
 ## Pipelines planejados
 
-- [ ] ENADE
-- [ ] IGC
-- [ ] `visão_ies` — tabela agregada com todos os indicadores
+- [ ] **IGC** — Índice Geral de Cursos, granularidade IES, 2007–2023
+- [ ] **Conceito ENADE** — resultado agregado por curso, 2004–2025
+- [ ] **ENADE Microdados** — dados por aluno, perfil socioeconômico; pipeline separado por volume e complexidade
+- [ ] **visão_ies** — tabela agregada com todos os indicadores por IES
 
 ## Estrutura
 
