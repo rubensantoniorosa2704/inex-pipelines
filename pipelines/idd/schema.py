@@ -106,6 +106,12 @@ IDD_COLUMN_MAP: dict[str, str] = {
 }
 
 # ---------------------------------------------------------------------------
+# Valor sentinel da coluna IDD (Faixa) no XLSX para cursos sem conceito
+# ---------------------------------------------------------------------------
+
+IDD_FAIXA_SC = "SC"
+
+# ---------------------------------------------------------------------------
 # Colunas obrigatórias no silver
 # ---------------------------------------------------------------------------
 
@@ -117,6 +123,7 @@ IDD_REQUIRED_COLUMNS: list[str] = [
     "nota_bruta_idd",
     "idd_continuo",
     "idd_faixa",
+    "in_sem_conceito",
 ]
 
 # ---------------------------------------------------------------------------
@@ -136,5 +143,6 @@ IDD_SILVER_SCHEMA: dict[str, pl.DataType] = {
     "nota_bruta_idd": pl.Float64,
     "idd_continuo": pl.Float64,
     "idd_faixa": pl.Int32,
+    "in_sem_conceito": pl.Boolean,
     "in_cebas": pl.Boolean,
 }
