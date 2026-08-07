@@ -29,12 +29,14 @@ inex-pipelines  → silver: Parquets limpos por ano
 | `fact_censo_ies` | `(co_ies, ano)` | Métricas anuais do Censo: docentes e técnico-administrativos |
 | `fact_cpc` | `(co_ies, co_curso, ano)` | CPC por curso: notas ENADE, IDD, corpo docente e percepção discente |
 | `fact_idd` | `(co_ies, co_curso, ano)` | IDD por curso: desempenho observado vs. esperado |
+| `fact_censo_cursos` | `(co_ies, co_curso, ano)` | Censo por curso: vagas, ingressantes, matrículas, concluintes, cor/raça, financiamento |
 
 O `co_ies` (código INEP) é a chave estável de todas as tabelas — não muda mesmo quando a IES muda de nome ou categoria administrativa.
 
 ## Pipelines implementados
 
-- [x] **Censo da Educação Superior** — 2009–2024
+- [x] **Censo da Educação Superior — IES** — 2009–2024
+- [x] **Censo da Educação Superior — Cursos** — 2009–2024
 - [x] **CPC** — 2021–2023
 - [x] **IDD** — 2016–2023
 
