@@ -23,6 +23,7 @@ from pipelines.cpc.schema import (
     YEARS_WITHOUT_CPC_FAIXA,
 )
 from shared.io import write_parquet
+from shared.lookup_cocurso import enrich_cocurso
 from shared.paths import bronze_dir, silver_path
 from shared.validate import assert_no_nulls, assert_not_empty, assert_required_columns
 
@@ -204,6 +205,10 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
     if "ano" not in df.columns:
         df = df.with_columns(pl.lit(year).cast(pl.Int32).alias("ano"))
 
+    # Enriquece co_curso via lookup em cascata para anos sem essa informação
+    if year in YEARS_WITHOUT_CO_CURSO:
+        df = enrich_cocurso(df, year, verbose=verbose)
+
     # Anos sem co_curso: não é erro — o INEP não publicava o código antes de 2017
     # Anos sem cpc_faixa: 2007/2008 só publicaram o CPC contínuo
     base_required = [c for c in CPC_REQUIRED_COLUMNS
@@ -222,8 +227,15 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
     write_parquet(df, out)
 
     n_cursos = df.shape[0]
-    has_curso = "co_curso" in df.columns
-    print(f"✓ {year} ({n_cursos} cursos{'' if has_curso else ', sem co_curso'})")
+    has_curso = "co_curso" in df.columns and df["co_curso"].null_count() < n_cursos
+    if has_curso and year in YEARS_WITHOUT_CO_CURSO:
+        n_preenchidos = n_cursos - df["co_curso"].null_count()
+        pct = n_preenchidos / n_cursos * 100
+        print(f"✓ {year} ({n_cursos} cursos, co_curso preenchido: {n_preenchidos}/{n_cursos} = {pct:.0f}%)")
+    elif has_curso:
+        print(f"✓ {year} ({n_cursos} cursos)")
+    else:
+        print(f"✓ {year} ({n_cursos} cursos, sem co_curso)")
     if verbose:
         print(df.head(3))
 
