@@ -1,37 +1,19 @@
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["pipelines*", "shared*"]
-
 [project]
 name = "inex-pipelines"
 version = "0.1.0"
 description = "ETL pipelines for INEP higher-education microdata"
-requires-python = ">=3.11"
-
+readme = "README.md"
+authors = [
+    { name = "rubensantoniorosa2704", email = "rubensrosaneto27@gmail.com" }
+]
+requires-python = ">=3.13"
 dependencies = [
-    "polars==1.30.0",
-    "pyarrow>=14.0.0",
-    "duckdb>=1.0.0",
-    "pyyaml>=6.0",
-    "click==8.1.8",
-    "pandas>=2.2.0",
-    "numpy>=1.26.0",
-    "xlrd>=2.0.1",
+    "polars>=1.43.2",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest==8.3.5",
-    "pytest-cov==6.1.0",
-    "ruff==0.11.13",
-]
+[project.scripts]
+inex-pipelines = "inex_pipelines:main"
 
-[tool.ruff]
-line-length = 100
-target-version = "py311"
-
-[tool.ruff.lint]
-select = ["E", "F", "I"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
