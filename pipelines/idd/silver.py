@@ -255,8 +255,8 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
 @click.option("--verbose", is_flag=True, help="Log detalhado")
 def main(year: str, force: bool, verbose: bool) -> None:
     """Gera o silver do IDD."""
-    from pipelines.censo.silver import _parse_years
-    years = _parse_years(year)
+    from shared.years import parse_years
+    years = parse_years(year)
     errors = []
 
     for y in years:

@@ -23,6 +23,7 @@ from pipelines.igc.schema import (
 from shared.io import write_parquet
 from shared.paths import bronze_dir, silver_path
 from shared.validate import assert_no_nulls, assert_not_empty, assert_required_columns
+from shared.years import parse_years
 
 
 # Sheets que não contêm dados do IGC
@@ -184,26 +185,13 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
         print(df.head(3))
 
 
-def _parse_years(year_str: str) -> list[int]:
-    """Converte '2017-2023' ou '2017,2019,2021-2023' em lista de ints."""
-    years: list[int] = []
-    for part in year_str.split(","):
-        part = part.strip()
-        if "-" in part:
-            start, end = part.split("-", 1)
-            years.extend(range(int(start), int(end) + 1))
-        else:
-            years.append(int(part))
-    return sorted(set(years))
-
-
 @click.command()
 @click.option("--year", required=True, help="Ano ou intervalo: 2023 ou 2017-2023")
 @click.option("--force", is_flag=True, help="Reprocessa mesmo se silver já atualizado")
 @click.option("--verbose", is_flag=True, help="Log detalhado")
 def main(year: str, force: bool, verbose: bool) -> None:
     """Gera o silver do IGC (suporta 2017–2023, exceto 2020)."""
-    years = _parse_years(year)
+    years = parse_years(year)
     errors = []
 
     for y in years:

@@ -10,7 +10,6 @@ Uso:
   python -m pipelines.censo.silver --year 2009-2023
 """
 
-import re
 import sys
 from pathlib import Path
 
@@ -26,6 +25,7 @@ from pipelines.censo.schema import (
 from shared.io import read_csv_inep, write_parquet
 from shared.paths import bronze_dir, silver_path
 from shared.validate import assert_no_nulls, assert_not_empty, assert_required_columns
+from shared.years import parse_years
 
 
 def _find_ies_csv(year: int) -> Path:
@@ -170,31 +170,13 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
     print(f"✓ {year}")
 
 
-def _parse_years(year_spec: str) -> list[int]:
-    """
-    Converte especificação de anos em lista de inteiros.
-    Suporta: '2023', '2020-2023', '2018,2020-2022'
-    """
-    years = []
-    for part in year_spec.split(","):
-        part = part.strip()
-        if re.match(r"^\d{4}-\d{4}$", part):
-            start, end = part.split("-")
-            years.extend(range(int(start), int(end) + 1))
-        elif re.match(r"^\d{4}$", part):
-            years.append(int(part))
-        else:
-            raise ValueError(f"Formato de ano inválido: '{part}'. Use '2023' ou '2020-2023'")
-    return sorted(set(years))
-
-
 @click.command()
 @click.option("--year", required=True, help="Ano ou intervalo: 2023 ou 2009-2023")
 @click.option("--force", is_flag=True, help="Reprocessa mesmo que o silver já esteja atualizado")
 @click.option("--verbose", is_flag=True, help="Log detalhado")
 def main(year: str, force: bool, verbose: bool) -> None:
     """Gera o silver do Censo da Educação Superior (arquivo IES)."""
-    years = _parse_years(year)
+    years = parse_years(year)
     errors = []
 
     for y in years:

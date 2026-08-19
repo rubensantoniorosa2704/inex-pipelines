@@ -22,10 +22,11 @@ from pipelines.censo.schema_cursos import (
     CURSO_REQUIRED_COLUMNS,
     CURSO_SILVER_SCHEMA,
 )
-from pipelines.censo.silver import _parse_years, _rename_columns, _cast_schema
+from pipelines.censo.silver import _rename_columns, _cast_schema
 from shared.io import read_csv_inep, write_parquet
 from shared.paths import bronze_dir, silver_path
 from shared.validate import assert_no_nulls, assert_not_empty, assert_required_columns
+from shared.years import parse_years
 
 
 def _find_cursos_csv(year: int) -> Path:
@@ -115,7 +116,7 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
 @click.option("--verbose", is_flag=True, help="Log detalhado")
 def main(year: str, force: bool, verbose: bool) -> None:
     """Gera o silver do Censo — arquivo de Cursos."""
-    years = _parse_years(year)
+    years = parse_years(year)
     errors = []
 
     for y in years:
