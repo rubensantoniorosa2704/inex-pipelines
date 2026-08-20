@@ -110,7 +110,8 @@ def process_year(year: int, verbose: bool = False, force: bool = False) -> None:
         return
 
     if verbose:
-        print(f"[{year}] lendo {csv_path}")
+        safe_path = str(csv_path).encode("utf-8", "replace").decode("utf-8")
+        print(f"[{year}] lendo {safe_path}")
     raw = read_csv_inep(csv_path)
 
     if verbose:
