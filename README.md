@@ -41,31 +41,25 @@ O `co_ies` (código INEP) é a chave estável de todas as tabelas — não muda 
 - [x] **CPC** — 2007–2023
 - [x] **IDD** — 2016–2023
 - [x] **IGC** — 2017–2023
+- [x] **ENADE Microdados** — 2004–2023
 
 ## Pipelines planejados
 
 - [ ] **IGC (2008–2016)** — anos anteriores com layout multi-sheet; não implementado por fragilidade (ver schema.py)
 - [ ] **Conceito ENADE** — resultado agregado por curso, 2004–2025
-- [ ] **ENADE Microdados** — dados por aluno, perfil socioeconômico; pipeline separado por volume e complexidade
+- [ ] **ENADE Questões** — explode vetores de acerto para análise de dificuldade por questão
 - [ ] **visão_ies** — tabela agregada com todos os indicadores por IES
 
 ## Estrutura
 
 ```
 pipelines/
-  censo/
-    schema.py     # mapeamento de colunas do INEP → nomes canônicos
-    silver.py     # limpeza e padronização
-    gold.py       # dim_ies, hist_ies, fact_censo_ies
-  enade/          # a implementar
-  cpc/            # a implementar
-  idd/            # a implementar
-  igc/            # a implementar
-shared/
-  io.py           # leitura de CSV do INEP, escrita de Parquet
-  paths.py        # resolução de caminhos via variáveis de ambiente
-  types.py        # tipos canônicos compartilhados
-  validate.py     # checagens de qualidade reutilizáveis
+  censo/       # Censo da Educação Superior (IES + Cursos)
+  enade/       # ENADE Microdados (notas, vetores, questionário)
+  cpc/         # Conceito Preliminar de Curso
+  idd/         # Indicador de Diferença entre Desempenhos
+  igc/         # Índice Geral de Cursos
+shared/        # Leitura de CSV, escrita de Parquet, validações
 ```
 
 ## Pré-requisitos
